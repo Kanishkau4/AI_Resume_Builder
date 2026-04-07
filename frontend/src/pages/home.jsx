@@ -3,7 +3,7 @@ import Banner from '../components/home/banner'
 import Hero from '../components/home/hero'
 import Features from '../components/home/features'
 import Testimonial from '../components/home/testimonial'
-import ActionSection from '../components/home/actionSection'
+import CallToAction from '../components/home/calltoAction'
 import Footer from '../components/home/footer'
 
 function Home() {
@@ -13,7 +13,7 @@ function Home() {
             <Hero />
             <Features />
             <Testimonial />
-            <ActionSection />
+            <CallToAction />
             <Footer />
         </div>
     )
