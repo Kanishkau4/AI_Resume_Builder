@@ -41,17 +41,17 @@ function CallToAction() {
 
                 {/* CV Mockups */}
                 <div className="absolute top-1/3 left-40 w-28 floating" style={{ animationDelay: '3s' }}>
-                    <img 
-                        src="/resume_mockup_1.png" 
-                        alt="CV" 
+                    <img
+                        src="/resume_mockup_1.png"
+                        alt="CV"
                         className="rounded-lg shadow-lg border-2 border-white transform -rotate-12"
                         onError={(e) => { e.target.src = 'https://cdn.dribbble.com/users/256646/screenshots/11545695/resumly-thumbnail.png?compress=1&resize=400x300'; }}
                     />
                 </div>
                 <div className="absolute bottom-1/4 left-10 w-20 floating" style={{ animationDelay: '4s' }}>
-                    <img 
-                        src="/resume_mockup_2.png" 
-                        alt="CV" 
+                    <img
+                        src="/resume_mockup_2.png"
+                        alt="CV"
                         className="rounded-lg shadow-lg border-2 border-white transform rotate-12"
                         onError={(e) => { e.target.src = 'https://cdn.dribbble.com/users/256646/screenshots/17157834/media/64923e3e031c6f4f22f778d940ce9727.png?compress=1&resize=400x300'; }}
                     />
@@ -63,14 +63,14 @@ function CallToAction() {
                     Ready to get started?
                 </h2>
                 <p className="text-gray-500 text-base md:text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-                    Build a professional, AI-powered resume on our online platform. 
+                    Build a professional, AI-powered resume on our online platform.
                     Streamline your career growth with modern templates and expert tips.
                 </p>
 
                 <div className="flex flex-col md:flex-row w-full max-w-lg mx-auto shadow-[0_15px_40px_rgba(0,0,0,0.08)] rounded-xl overflow-hidden group">
-                    <input 
-                        type="email" 
-                        placeholder="Enter your email address" 
+                    <input
+                        type="email"
+                        placeholder="Enter your email address"
                         className="flex-1 px-6 py-4 bg-white text-slate-800 outline-none border-none text-base placeholder:text-gray-400"
                     />
                     <button className="bg-[#10b981] hover:bg-[#059669] text-white px-8 py-4 font-bold text-base transition-all duration-300">
