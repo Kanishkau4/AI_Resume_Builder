@@ -1,4 +1,5 @@
-import { Mail, Phone, MapPin, Link, Globe } from "lucide-react";
+import { Mail, Phone, MapPin, Globe } from "lucide-react";
+import { FaLinkedin } from "react-icons/fa";
 
 const ModernTemplate = ({ data, accentColor }) => {
 	const formatDate = (dateStr) => {
@@ -39,7 +40,7 @@ const ModernTemplate = ({ data, accentColor }) => {
 					)}
 					{data.personal_info?.linkedin && (
 						<a target="_blank" href={data.personal_info?.linkedin} className="flex items-center">
-							<Link className="w-3.5 h-3.5 mr-1" />
+							<FaLinkedin className="w-3.5 h-3.5 mr-1" />
 							<span className="break-all text-xs">{data.personal_info.linkedin.split("https://www.")[1] ? data.personal_info.linkedin.split("https://www.")[1] : data.personal_info.linkedin}</span>
 						</a>
 					)}
@@ -103,7 +104,7 @@ const ModernTemplate = ({ data, accentColor }) => {
 
 						<div className="space-y-6">
 							{data.project.map((p, index) => (
-								<div key={index} className="relative pl-6 border-l border-gray-200" style={{borderLeftColor: accentColor}}>
+								<div key={index} className="relative pl-6 border-l border-gray-200" style={{ borderLeftColor: accentColor }}>
 
 
 									<div className="flex justify-between items-start">

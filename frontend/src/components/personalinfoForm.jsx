@@ -1,5 +1,6 @@
 import React from 'react'
-import { User, Mail, Phone, MapPin, Briefcase, Link, Globe } from 'lucide-react'
+import { User, Mail, Phone, MapPin, Briefcase, Globe } from 'lucide-react'
+import { FaLinkedin } from 'react-icons/fa'
 
 function PersonalInfoForm({ data, onChange, removeBackground, setRemoveBackground }) {
 
@@ -16,7 +17,7 @@ function PersonalInfoForm({ data, onChange, removeBackground, setRemoveBackgroun
         { key: 'phone', label: 'Phone', type: 'tel', icon: Phone, placeholder: '+1 234 567 890', required: true },
         { key: 'location', label: 'Location', type: 'text', icon: MapPin, placeholder: '123 Main St, Anytown, USA', required: true },
         { key: 'profession', label: 'Profession', type: 'text', icon: Briefcase, placeholder: 'Software Engineer', required: true },
-        { key: 'linkedin', label: 'LinkedIn', type: 'url', icon: Link, placeholder: 'linkedin.com/in/johndoe' },
+        { key: 'linkedin', label: 'LinkedIn', type: 'url', icon: FaLinkedin, placeholder: 'linkedin.com/in/johndoe' },
         { key: 'website', label: 'Portfolio', type: 'url', icon: Globe, placeholder: 'johndoe.com' },
     ]
 
