@@ -8,6 +8,9 @@ import TemplateSelector from '../components/templateSelector'
 import ColorPicker from '../components/colorPicker'
 import ProfessionalSummeryForm from '../components/professionalSummeryForm'
 import ExperienceForm from '../components/experienceForm'
+import EducationForm from '../components/educationForm'
+import ProjectsForm from '../components/projectsForm'
+import SkillsForm from '../components/skillsForm'
 
 function resumeBuilder() {
     const { resumeId } = useParams()
@@ -19,7 +22,7 @@ function resumeBuilder() {
         experience: [],
         education: [],
         skills: [],
-        projects: [],
+        project: [],
         template: "classic",
         accent_color: "#3B82F6",
         public: false,
@@ -133,7 +136,7 @@ function resumeBuilder() {
                                         onChange={(data) => setResumeData(prev => ({ ...prev, experience: data }))}
                                     />
                                 )}
-                                {/* {activeSection.id === 'education' && (
+                                {activeSection.id === 'education' && (
                                     <EducationForm data={resumeData.education}
                                         onChange={(data) => setResumeData(prev => ({ ...prev, education: data }))}
                                     />
@@ -144,10 +147,10 @@ function resumeBuilder() {
                                     />
                                 )}
                                 {activeSection.id === 'projects' && (
-                                    <ProjectsForm data={resumeData.projects}
-                                        onChange={(data) => setResumeData(prev => ({ ...prev, projects: data }))}
+                                    <ProjectsForm data={resumeData.project}
+                                        onChange={(data) => setResumeData(prev => ({ ...prev, project: data }))}
                                     />
-                                )} */}
+                                )}
                             </div>
                         </div>
                     </div>

@@ -41,7 +41,7 @@ function ExperienceForm({ data, onChange }) {
             </div>
             {data.length === 0 ? (
                 <div className='text-center py-10 text-slate-500'>
-                    <Briefcase className='size-12 mx-auto mb-2 text-green-400' />
+                    <Briefcase className='size-12 mx-auto mb-2 text-emerald-300' />
                     <p>No experience added yet</p>
                     <p className='text-sm text-slate-500'>Click the button above to add your first experience</p>
                 </div>
