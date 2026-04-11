@@ -7,6 +7,7 @@ import ResumePreview from '../components/resumePreview'
 import TemplateSelector from '../components/templateSelector'
 import ColorPicker from '../components/colorPicker'
 import ProfessionalSummeryForm from '../components/professionalSummeryForm'
+import ExperienceForm from '../components/experienceForm'
 
 function resumeBuilder() {
     const { resumeId } = useParams()
@@ -127,6 +128,26 @@ function resumeBuilder() {
                                         onChange={(data) => setResumeData(prev => ({ ...prev, professional_summary: data }))}
                                     />
                                 )}
+                                {activeSection.id === 'experience' && (
+                                    <ExperienceForm data={resumeData.experience}
+                                        onChange={(data) => setResumeData(prev => ({ ...prev, experience: data }))}
+                                    />
+                                )}
+                                {/* {activeSection.id === 'education' && (
+                                    <EducationForm data={resumeData.education}
+                                        onChange={(data) => setResumeData(prev => ({ ...prev, education: data }))}
+                                    />
+                                )}
+                                {activeSection.id === 'skills' && (
+                                    <SkillsForm data={resumeData.skills}
+                                        onChange={(data) => setResumeData(prev => ({ ...prev, skills: data }))}
+                                    />
+                                )}
+                                {activeSection.id === 'projects' && (
+                                    <ProjectsForm data={resumeData.projects}
+                                        onChange={(data) => setResumeData(prev => ({ ...prev, projects: data }))}
+                                    />
+                                )} */}
                             </div>
                         </div>
                     </div>
