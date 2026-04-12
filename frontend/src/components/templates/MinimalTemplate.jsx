@@ -48,7 +48,7 @@ const MinimalTemplate = ({ data, accentColor }) => {
 
                     <div className="space-y-6">
                         {data.experience.map((exp, index) => (
-                            <div key={index}>
+                            <div key={index} className="break-inside-avoid">
                                 <div className="flex justify-between items-baseline mb-1">
                                     <h3 className="text-lg font-medium">{exp.position}</h3>
                                     <span className="text-sm text-gray-500">
@@ -76,7 +76,7 @@ const MinimalTemplate = ({ data, accentColor }) => {
 
                     <div className="space-y-4">
                         {data.project.map((proj, index) => (
-                            <div key={index} className="flex flex-col gap-2 justify-between items-baseline">
+                            <div key={index} className="flex flex-col gap-2 justify-between items-baseline break-inside-avoid">
                                 <h3 className="text-lg font-medium ">{proj.name}</h3>
                                 <p className="text-gray-600">{proj.description}</p>
                             </div>
@@ -94,7 +94,7 @@ const MinimalTemplate = ({ data, accentColor }) => {
 
                     <div className="space-y-4">
                         {data.education.map((edu, index) => (
-                            <div key={index} className="flex justify-between items-baseline">
+                            <div key={index} className="flex justify-between items-baseline break-inside-avoid">
                                 <div>
                                     <h3 className="font-medium">
                                         {edu.degree} {edu.field && `in ${edu.field}`}

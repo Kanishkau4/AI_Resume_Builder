@@ -1,5 +1,5 @@
 import { Mail, Phone, MapPin, Globe } from "lucide-react";
-import { FaLinkedin } from "react-icons/fa";
+import { BsLinkedin } from "react-icons/bs";
 
 const ModernTemplate = ({ data, accentColor }) => {
 	const formatDate = (dateStr) => {
@@ -40,7 +40,7 @@ const ModernTemplate = ({ data, accentColor }) => {
 					)}
 					{data.personal_info?.linkedin && (
 						<a target="_blank" href={data.personal_info?.linkedin} className="flex items-center">
-							<FaLinkedin className="w-3.5 h-3.5 mr-1" />
+							<BsLinkedin className="w-3.5 h-3.5 mr-1" />
 							<span className="break-all text-xs">{data.personal_info.linkedin.split("https://www.")[1] ? data.personal_info.linkedin.split("https://www.")[1] : data.personal_info.linkedin}</span>
 						</a>
 					)}
@@ -73,7 +73,7 @@ const ModernTemplate = ({ data, accentColor }) => {
 
 						<div className="space-y-6">
 							{data.experience.map((exp, index) => (
-								<div key={index} className="relative pl-6 border-l border-gray-200">
+								<div key={index} className="relative pl-6 border-l border-gray-200 break-inside-avoid">
 
 									<div className="flex justify-between items-start mb-2">
 										<div>
@@ -104,7 +104,7 @@ const ModernTemplate = ({ data, accentColor }) => {
 
 						<div className="space-y-6">
 							{data.project.map((p, index) => (
-								<div key={index} className="relative pl-6 border-l border-gray-200" style={{ borderLeftColor: accentColor }}>
+								<div key={index} className="relative pl-6 border-l border-gray-200 break-inside-avoid" style={{ borderLeftColor: accentColor }}>
 
 
 									<div className="flex justify-between items-start">
@@ -133,7 +133,7 @@ const ModernTemplate = ({ data, accentColor }) => {
 
 							<div className="space-y-4">
 								{data.education.map((edu, index) => (
-									<div key={index}>
+									<div key={index} className="break-inside-avoid">
 										<h3 className="font-semibold text-gray-900">
 											{edu.degree} {edu.field && `in ${edu.field}`}
 										</h3>

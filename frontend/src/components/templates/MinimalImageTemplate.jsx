@@ -78,7 +78,7 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
                             </h2>
                             <div className="space-y-4 text-sm">
                                 {data.education.map((edu, index) => (
-                                    <div key={index}>
+                                    <div key={index} className="break-inside-avoid">
                                         <p className="font-semibold uppercase">{edu.degree}</p>
                                         <p className="text-zinc-600">{edu.institution}</p>
                                         <p className="text-xs text-zinc-500">
@@ -128,7 +128,7 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
                             </h2>
                             <div className="space-y-6 mb-8">
                                 {data.experience.map((exp, index) => (
-                                    <div key={index}>
+                                    <div key={index} className="break-inside-avoid">
                                         <div className="flex justify-between items-center">
                                             <h3 className="font-semibold text-zinc-900">
                                                 {exp.position}
@@ -162,7 +162,7 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
                             </h2>
                             <div className="space-y-4">
                                 {data.project.map((project, index) => (
-                                    <div key={index}>
+                                    <div key={index} className="break-inside-avoid">
                                         <h3 className="text-md font-medium text-zinc-800 mt-3">{project.name}</h3>
                                         <p className="text-sm mb-1" style={{ color: accentColor }} >
                                             {project.type}

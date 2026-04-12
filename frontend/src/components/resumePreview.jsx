@@ -24,7 +24,7 @@ function ResumePreview({ data, template, accentColor, classes = "" }) {
             <div id='resume-preview' className={`print:shadow-none print:border-none shadow-sm border border-slate-200` + classes}>
                 {renderTemplate()}
             </div>
-            <style jsx>
+            <style>
                 {`
                 @page {
                     size: A4;
@@ -36,23 +36,7 @@ function ResumePreview({ data, template, accentColor, classes = "" }) {
                         height: 297mm;
                         margin: 0;
                         padding: 0;
-                        overflow: hidden;
-                    }
-                    body * {
-                        visibility: hidden;
-                    }
-                    #resume-preview, #resume-preview * {
-                        visibility: visible;
-                    }
-                    #resume-preview {
-                        position: absolute;
-                        left: 0;
-                        top: 0;
-                        width: 100%;
-                        height: 100%;
-                        overflow: visible;
-                        box-shadow: none;
-                        border: none;
+                        background: white;
                     }
                 }
                 `}
