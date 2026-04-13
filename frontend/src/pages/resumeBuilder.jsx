@@ -6,14 +6,14 @@ import { dummyResumeData } from '../assets/assets'
 import ResumePreview from '../components/resumePreview'
 import TemplateSelector from '../components/templateSelector'
 import ColorPicker from '../components/colorPicker'
-import ProfessionalSummeryForm from '../components/professionalSummeryForm'
+import ProfessionalSummaryForm from '../components/professionalSummaryForm'
 import ExperienceForm from '../components/experienceForm'
 import EducationForm from '../components/educationForm'
 import ProjectsForm from '../components/projectsForm'
 import SkillsForm from '../components/skillsForm'
 import { FaShare } from 'react-icons/fa'
 
-function resumeBuilder() {
+function ResumeBuilder() {
     const { resumeId } = useParams()
     const [resumeData, setResumeData] = useState({
         _id: "",
@@ -150,7 +150,7 @@ function resumeBuilder() {
                                     />
                                 )}
                                 {activeSection.id === 'professional_summary' && (
-                                    <ProfessionalSummeryForm data={resumeData.professional_summary}
+                                    <ProfessionalSummaryForm data={resumeData.professional_summary}
                                         onChange={(data) => setResumeData(prev => ({ ...prev, professional_summary: data }))}
                                     />
                                 )}
@@ -235,4 +235,4 @@ function resumeBuilder() {
     )
 }
 
-export default resumeBuilder
+export default ResumeBuilder
