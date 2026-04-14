@@ -39,23 +39,6 @@ function CallToAction() {
                 <div className="absolute top-20 left-60 w-2 h-2 bg-blue-500 rounded-full opacity-60 floating" style={{ animationDelay: '0.5s' }}></div>
                 <div className="absolute bottom-20 left-48 w-4 h-4 bg-yellow-400 rounded-full opacity-60 floating" style={{ animationDelay: '1.5s' }}></div>
 
-                {/* CV Mockups */}
-                <div className="absolute top-1/3 left-40 w-28 floating" style={{ animationDelay: '3s' }}>
-                    <img
-                        src="/resume_mockup_1.png"
-                        alt="CV"
-                        className="rounded-lg shadow-lg border-2 border-white transform -rotate-12"
-                        onError={(e) => { e.target.src = 'https://cdn.dribbble.com/users/256646/screenshots/11545695/resumly-thumbnail.png?compress=1&resize=400x300'; }}
-                    />
-                </div>
-                <div className="absolute bottom-1/4 left-10 w-20 floating" style={{ animationDelay: '4s' }}>
-                    <img
-                        src="/resume_mockup_2.png"
-                        alt="CV"
-                        className="rounded-lg shadow-lg border-2 border-white transform rotate-12"
-                        onError={(e) => { e.target.src = 'https://cdn.dribbble.com/users/256646/screenshots/17157834/media/64923e3e031c6f4f22f778d940ce9727.png?compress=1&resize=400x300'; }}
-                    />
-                </div>
             </div>
 
             <div className="relative max-w-4xl mx-auto text-center z-10">
