@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { FilePenLineIcon, Pencil, Plus, Trash2Icon, Upload, UploadCloud, X, Search, MoreVertical, LayoutGrid, List } from 'lucide-react'
 import { dummyResumeData } from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 function Dashboard() {
     const colors = ["#6366f1", "#8b5cf6", "#ec4899", "#f43f5e", "#f59e0b", "#10b981", "#06b6d4"]
@@ -15,6 +16,8 @@ function Dashboard() {
     const [searchQuery, setSearchQuery] = useState("")
 
     const navigate = useNavigate()
+
+    const { user } = useSelector((state) => state.auth)
 
     const loadResumes = async () => {
         setResumes(dummyResumeData)
@@ -113,7 +116,7 @@ function Dashboard() {
                     {/* Welcome Display */}
                     <div className='hidden lg:flex col-span-2 bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-8 items-center justify-between text-white relative overflow-hidden shadow-lg'>
                         <div className='relative z-10'>
-                            <h3 className='text-2xl font-bold mb-2'>Welcome, John Doe</h3>
+                            <h3 className='text-2xl font-bold mb-2'>Welcome, {user?.name}</h3>
                             <p className='text-emerald-50 max-w-[240px]'>You have {resumes.length} resumes active. Keep improving your career score!</p>
                             <button className='mt-4 px-6 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-full text-sm font-medium transition-colors border border-white/20'>Tips & Tricks</button>
                         </div>

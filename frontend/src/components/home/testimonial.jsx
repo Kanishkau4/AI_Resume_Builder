@@ -1,6 +1,6 @@
 import React from 'react'
 
-function testimonial() {
+function Testimonial() {
 
     const cardsData = [
         {
@@ -92,4 +92,4 @@ function testimonial() {
     )
 }
 
-export default testimonial
+export default Testimonial

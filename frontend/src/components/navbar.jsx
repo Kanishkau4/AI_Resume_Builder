@@ -1,13 +1,17 @@
 import React from 'react'
 import { LogOut } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../app/features/authSlice';
 
 function Navbar() {
-    const user = { name: "John Doe" }
+    const { user } = useSelector((state) => state.auth)
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        navigate("/login");
+        dispatch(logout());
+        navigate("/");
     }
 
     return (

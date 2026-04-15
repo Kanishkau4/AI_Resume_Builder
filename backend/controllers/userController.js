@@ -41,7 +41,7 @@ export const registerUser = async (req, res) => {
         newUser.password = undefined;
 
         // send response
-        return res.status(201).json({ newUser, token, message: "User registered successfully" });
+        return res.status(201).json({ success: true, data: newUser, token, message: "User registered successfully" });
 
     } catch (error) {
 
@@ -80,7 +80,7 @@ export const authUser = async (req, res) => {
         user.password = undefined;
 
         // send response
-        return res.status(200).json({ user, token, message: "User logged in successfully" });
+        return res.status(200).json({ success: true, data: user, token, message: "User logged in successfully" });
 
     } catch (error) {
 
@@ -106,7 +106,7 @@ export const getUserData = async (req, res) => {
         user.password = undefined;
 
         // send response
-        return res.status(200).json(user);
+        return res.status(200).json({ success: true, data: user });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error" });

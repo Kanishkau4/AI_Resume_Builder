@@ -1,6 +1,6 @@
 import React from 'react'
 
-function features() {
+function Features() {
     return (
         <div id="features" className="flex flex-col gap-5">
 
@@ -63,4 +63,4 @@ function features() {
     )
 }
 
-export default features
+export default Features

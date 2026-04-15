@@ -1,11 +1,10 @@
+import "dotenv/config"; // This ensures .env is loaded before other imports
 import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import userRoute from "./routes/userRoute.js";
 import resumeRoute from "./routes/resumeRoute.js";
-
-dotenv.config();
+import aiRoute from "./routes/aiRoute.js";
 // connect to database
 connectDB();
 
@@ -23,6 +22,9 @@ app.use("/api/users", userRoute);
 
 // resume routes
 app.use("/api/resumes", resumeRoute);
+
+// ai routes
+app.use("/api/ai", aiRoute);
 
 const PORT = process.env.PORT || 5000;
 

@@ -1,6 +1,13 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import api from '../config/api'
+import { login as loginAction } from '../app/features/authSlice'
+import { gooeyToast } from 'goey-toast'
 
-function login() {
+function Login() {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
     const query = new URLSearchParams(window.location.search)
     const urlState = query.get("state")
     const [state, setState] = React.useState(urlState || "login")
@@ -21,7 +28,23 @@ function login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        console.log("Form submitted:", formData)
+        try {
+            const endpoint = state === "signup" ? "/api/users/register" : "/api/users/login"
+            const { data } = await api.post(endpoint, formData)
+
+            if (data.token) {
+                localStorage.setItem("token", data.token)
+                dispatch(loginAction({
+                    token: data.token,
+                    user: data.data
+                }))
+                gooeyToast.success(state === "signup" ? "Account created successfully" : "Login successful", { preset: "bouncy" })
+                navigate("/app")
+            }
+        } catch (error) {
+            console.error(error.response?.data?.message || "Something went wrong")
+            gooeyToast.error(error.response?.data?.message || "Something went wrong", { preset: "bouncy" })
+        }
     }
 
     return (
@@ -108,4 +131,4 @@ function login() {
     )
 }
 
-export default login
+export default Login
