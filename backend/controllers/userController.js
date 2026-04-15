@@ -113,3 +113,25 @@ export const getUserData = async (req, res) => {
     }
 }
 
+// @desc    Get user resumes
+// @route   GET /api/users/resumes
+// @access  Private
+export const getUserResumes = async (req, res) => {
+    try {
+        // get resumes from database
+        const resumes = await Resume.find({ userId: req.userId });
+
+        // check if resumes exists
+        if (!resumes) {
+            return res.status(404).json({ message: "No resumes found" });
+        }
+
+        // send response
+        return res.status(200).json(resumes);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+

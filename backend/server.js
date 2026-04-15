@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import userRoute from "./routes/userRoute.js";
+import resumeRoute from "./routes/resumeRoute.js";
 
 dotenv.config();
 // connect to database
@@ -19,6 +20,9 @@ app.get("/", (req, res) => {
 
 // user routes
 app.use("/api/users", userRoute);
+
+// resume routes
+app.use("/api/resumes", resumeRoute);
 
 const PORT = process.env.PORT || 5000;
 
