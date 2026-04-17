@@ -3,6 +3,10 @@ import ModernTemplate from './templates/ModernTemplate'
 import ClassicTemplate from './templates/ClassicTemplate'
 import MinimalTemplate from './templates/MinimalTemplate'
 import MinimalImageTemplate from './templates/MinimalImageTemplate'
+import ExecutiveTemplate from './templates/ExecutiveTemplate'
+import CreativeTemplate from './templates/CreativeTemplate'
+import EleganceTemplate from './templates/EleganceTemplate'
+import ModernSidebarTemplate from './templates/ModernSidebarTemplate'
 
 function ResumePreview({ data, template, accentColor, classes = "" }) {
 
@@ -14,6 +18,14 @@ function ResumePreview({ data, template, accentColor, classes = "" }) {
                 return <MinimalTemplate data={data} accentColor={accentColor} />
             case 'minimal-image':
                 return <MinimalImageTemplate data={data} accentColor={accentColor} />
+            case 'executive':
+                return <ExecutiveTemplate data={data} accentColor={accentColor} />
+            case 'creative':
+                return <CreativeTemplate data={data} accentColor={accentColor} />
+            case 'elegance':
+                return <EleganceTemplate data={data} accentColor={accentColor} />
+            case 'modern-sidebar':
+                return <ModernSidebarTemplate data={data} accentColor={accentColor} />
             default:
                 return <ClassicTemplate data={data} accentColor={accentColor} />
         }

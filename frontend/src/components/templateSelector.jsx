@@ -26,6 +26,26 @@ function TemplateSelector({ selectedTemplate, onChange }) {
             name: 'Minimal Image',
             preview: 'Minimal design with a dedicated space for your profile picture',
         },
+        {
+            id: 'executive',
+            name: 'Executive',
+            preview: 'Premium two-column layout with a rich sidebar and serif elegance',
+        },
+        {
+            id: 'creative',
+            name: 'Creative',
+            preview: 'Bold geometric header with a vibrant accent-driven two-column grid',
+        },
+        {
+            id: 'elegance',
+            name: 'Elegance',
+            preview: 'Premium design with circular profile photo and gradient header',
+        },
+        {
+            id: 'modern-sidebar',
+            name: 'Modern Sidebar',
+            preview: 'Striking colored shape layout overlapping a circular profile photo',
+        },
     ]
 
     return (

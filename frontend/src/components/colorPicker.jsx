@@ -16,7 +16,7 @@ function ColorPicker({ selectedColor, onChange }) {
         { name: "Teal", value: "#14B8A6" },
         { name: "Indigo", value: "#6366F1" },
         { name: "Rose", value: "#F43F5E" },
-        { name: "Violet", value: "#8B5CF6" },
+        { name: "Light Brown", value: "#D2B48C" },
         { name: "Fuchsia", value: "#D946EF" },
         { name: "Black", value: "#000000" },
         { name: "Navy", value: "#000080" },

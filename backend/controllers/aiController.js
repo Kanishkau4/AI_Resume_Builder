@@ -17,7 +17,7 @@ export const enhanceProfessionalSummary = async (req, res) => {
         const response = await openai.chat.completions.create({
             model: process.env.GEMINI_MODEL,
             messages: [
-                { role: "system", content: "You are a resume expert. Your task is to enhance the user's professional summary. The summary should be 2-3 sentences long and highlight the user's skills, experience, and achievements. Make it compelling and ATS friendly. and only return text not any other thing." },
+                { role: "system", content: "You are a resume expert. Your task is to enhance the user's professional summary. The summary should be 1-2 sentences long and highlight the user's skills, experience, and achievements. Make it compelling and ATS friendly. and only return text not any other thing." },
                 { role: "user", content: userContent },
             ],
         });
@@ -46,7 +46,7 @@ export const enhanceJobDescription = async (req, res) => {
         const response = await openai.chat.completions.create({
             model: process.env.GEMINI_MODEL,
             messages: [
-                { role: "system", content: "You are a resume expert. Your task is to enhance the user's job description. The job description should be 2-3 sentences long and highlight key responsibilities and achievements. Use action verbs and quantify achievements where possible. Make it compelling and ATS friendly. and only return text not any other thing." },
+                { role: "system", content: "You are a resume expert. Your task is to enhance the user's job description. The job description should be 1-2 sentences long and highlight key responsibilities and achievements. Use action verbs and quantify achievements where possible. Make it compelling and ATS friendly. and only return text not any other thing." },
                 { role: "user", content: userContent },
             ],
         });
