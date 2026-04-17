@@ -73,55 +73,64 @@ export const uploadResume = async (req, res) => {
         }
 
         const systemPrompt = `
-        You are an expert AI Agent to extract data from the resume.
+        You are an expert AI Assistant specialized in resume parsing. 
+        Your task is to extract information from the provided resume text and return it as a clean JSON object. 
+        Be professional and ensure all data is accurately mapped.
         `
 
         const userPrompt = `
-        Extract the data from this resume: ${resumeText}
+        Extract all relevant information from the following resume text:
+        ---
+        ${resumeText}
+        ---
 
-        provide data in the following JSON format with no additional text before or after:
+        Return ONLY a JSON object following this EXACT structure:
         {
-            personal_info: {
-        image: { type: String, default: "" },
-        full_name: { type: String, default: "" },
-        profession: { type: String, default: "" },
-        email: { type: String, default: "" },
-        phone: { type: String, default: "" },
-        location: { type: String, default: "" },
-        linkedin: { type: String, default: "" },
-        website: { type: String, default: "" },
-    },
-    professional_summary: { type: String, default: "" },
-    experience: [
-        {
-            company: { type: String, default: "" },
-            position: { type: String, default: "" },
-            start_date: { type: Date, default: "" },
-            end_date: { type: Date, default: "" },
-            description: { type: String, default: "" },
-            is_current: { type: Boolean, default: false },
+            "personal_info": {
+                "full_name": "",
+                "profession": "",
+                "email": "",
+                "phone": "",
+                "location": "",
+                "linkedin": "",
+                "website": ""
+            },
+            "professional_summary": "",
+            "experience": [
+                {
+                    "company": "",
+                    "position": "",
+                    "start_date": "YYYY-MM-DD",
+                    "end_date": "YYYY-MM-DD",
+                    "description": "Multi-line description of responsibilities",
+                    "is_current": false
+                }
+            ],
+            "education": [
+                {
+                    "institution": "",
+                    "degree": "",
+                    "field": "",
+                    "graduation_date": "YYYY-MM-DD",
+                    "gpa": "",
+                    "description": ""
+                }
+            ],
+            "skills": ["Skill 1", "Skill 2"],
+            "projects": [
+                {
+                    "name": "",
+                    "type": "",
+                    "description": ""
+                }
+            ]
         }
-    ],
-    education: [
-        {
-            institution: { type: String, default: "" },
-            degree: { type: String, default: "" },
-            field: { type: String, default: "" },
-            graduation_date: { type: String, default: "" },
-            gpa: { type: String, default: "" },
-            description: { type: String, default: "" },
-        }
-    ],
-    skills: [{ type: String }],
-    projects: [
-        {
-            name: { type: String, default: "" },
-            type: { type: String, default: "" },
-            description: { type: String, default: "" },
-        }
-    ]
-    }
+
+        - If information is missing, use an empty string "" or false for booleans.
+        - CRITICAL: Dates MUST be in YYYY-MM-DD format for database compatibility. If a day or month is missing, use 01 (e.g., 2023-01-01).
+        - Return ONLY the JSON object.
         `
+
         // extract data from resume
         const response = await openai.chat.completions.create({
             model: process.env.GEMINI_MODEL,
@@ -132,17 +141,36 @@ export const uploadResume = async (req, res) => {
             response_format: { type: "json_object" },
         });
 
-        const resumeData = JSON.parse(response.choices[0].message.content);
+        const content = response.choices[0].message.content;
+        console.log("AI Extraction Result:", content);
+
+        let resumeData;
+        try {
+            resumeData = JSON.parse(content);
+        } catch (parseError) {
+            console.error("Failed to parse AI response:", parseError);
+            return res.status(500).json({ message: "AI returned invalid data format" });
+        }
+
+        // Final cleanup for date fields to prevent Mongoose cast errors
+        if (resumeData.experience) {
+            resumeData.experience = resumeData.experience.map(exp => ({
+                ...exp,
+                start_date: exp.start_date || undefined,
+                end_date: exp.end_date || undefined
+            }));
+        }
+
         const resume = await Resume.create({
             userId,
             title,
             ...resumeData,
         });
-        // send response
+
         res.json({ resumeId: resume._id });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Internal server error" });
+        console.error("Resume Upload Error:", error);
+        return res.status(500).json({ message: error.message || "Internal server error" });
     }
 }
 

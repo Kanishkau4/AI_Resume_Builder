@@ -14,7 +14,7 @@ function Dashboard() {
     const [showCreateResume, setShowCreateResume] = useState(false)
     const [showUploadResume, setShowUploadResume] = useState(false)
     const [resumeTitle, setResumeTitle] = useState("")
-    const [resumeId, setResumeId] = useState(null)
+    const [uploadFile, setUploadFile] = useState(null)
     const [editResumeId, setEditResumeId] = useState(null)
     const [searchQuery, setSearchQuery] = useState("")
     const [loading, setLoading] = useState(false)
@@ -60,27 +60,62 @@ function Dashboard() {
 
     const handleUploadResume = async (e) => {
         e.preventDefault()
-        try {
-            setLoading(true)
-            const resumeText = await pdfToText(resumeId)
-            const { data } = await api.post('/api/ai/upload-resume', {
-                title: resumeTitle,
-                resumeText: resumeText
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-            await loadResumes()
-            setShowUploadResume(false)
-            setResumeTitle("")
-            setResumeId(null)
-            navigate(`/app/builder/${data.resumeId}`)
-        } catch (error) {
-            gooeyToast.error(error.response?.data?.message || "Something went wrong", { preset: "bouncy" })
-        } finally {
-            setLoading(false)
+        if (!uploadFile) {
+            gooeyToast.error("Please select a PDF file", { preset: "bouncy" })
+            return
         }
+
+        const uploadPromise = new Promise(async (resolve, reject) => {
+            try {
+                // 1. Extract Text
+                const extractText = typeof pdfToText === 'function' ? pdfToText : pdfToText.default;
+                if (typeof extractText !== 'function') {
+                    throw new Error("PDF library error. Please refresh.")
+                }
+
+                const resumeText = await extractText(uploadFile)
+                if (!resumeText || resumeText.trim().length === 0) {
+                    throw new Error("Could not extract text from this PDF.")
+                }
+
+                // 2. Upload to AI
+                const { data } = await api.post('/api/ai/upload-resume', {
+                    title: resumeTitle,
+                    resumeText: resumeText
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+
+                // 3. Refresh and navigate
+                await loadResumes()
+                setShowUploadResume(false)
+                setResumeTitle("")
+                setUploadFile(null)
+                
+                resolve(data)
+            } catch (error) {
+                console.error(error)
+                reject(error)
+            }
+        })
+
+        gooeyToast.promise(uploadPromise, {
+            loading: 'Analyzing Resume...',
+            success: 'Resume Imported!',
+            error: (err) => err.message || err.response?.data?.message || "Import failed",
+            description: {
+                loading: 'Extracting data with AI...',
+                success: 'Redirecting to builder...',
+                error: 'Please try another PDF file.',
+            },
+            preset: "bouncy"
+        }).then((data) => {
+            if (data?.resumeId) {
+                navigate(`/app/builder/${data.resumeId}`)
+            }
+        })
     }
 
     // Edit resume title
@@ -314,7 +349,7 @@ function Dashboard() {
                             setShowUploadResume(false);
                             setEditResumeId(null);
                             setResumeTitle("");
-                            setResumeId(null);
+                            setUploadFile(null);
                         }}
                     />
 
@@ -332,7 +367,7 @@ function Dashboard() {
                                         setShowUploadResume(false);
                                         setEditResumeId(null);
                                         setResumeTitle("");
-                                        setResumeId(null);
+                                        setUploadFile(null);
                                     }}
                                     className='p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors'
                                 >
@@ -370,18 +405,18 @@ function Dashboard() {
                                                 id="resume-input"
                                                 accept='.pdf'
                                                 hidden
-                                                onChange={(e) => setResumeId(e.target.files[0])}
+                                                onChange={(e) => setUploadFile(e.target.files[0])}
                                             />
                                             <label
                                                 htmlFor="resume-input"
                                                 className='flex flex-col items-center justify-center gap-4 border-2 border-dashed border-slate-200 rounded-2xl p-8 hover:border-emerald-500 hover:bg-emerald-50/50 cursor-pointer transition-all group'
                                             >
-                                                {resumeId ? (
+                                                {uploadFile ? (
                                                     <div className='text-center'>
                                                         <div className='size-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-2'>
                                                             <UploadCloud className="size-6" />
                                                         </div>
-                                                        <p className='text-sm font-bold text-slate-800'>{resumeId.name}</p>
+                                                        <p className='text-sm font-bold text-slate-800'>{uploadFile.name}</p>
                                                         <p className='text-xs text-slate-500 mt-1'>Click to change file</p>
                                                     </div>
                                                 ) : (
@@ -408,13 +443,14 @@ function Dashboard() {
                                             setShowUploadResume(false);
                                             setEditResumeId(null);
                                             setResumeTitle("");
-                                            setResumeId(null);
+                                            setUploadFile(null);
                                         }}
                                         className='flex-1 px-6 py-3 border border-slate-200 text-slate-600 font-bold rounded-2xl hover:bg-slate-50 transition-colors'
                                     >
                                         Cancel
                                     </button>
                                     <button
+
                                         type="submit"
                                         className='flex-1 px-6 py-3 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 active:scale-[0.98] transition-all'
                                     >
