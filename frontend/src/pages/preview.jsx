@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { dummyResumeData } from '../assets/assets';
 import ResumePreview from '../components/resumePreview';
 import { useParams, Link } from 'react-router-dom';
 import Loader from '../components/Loader';
-import { ArrowLeft, Download, Share2 } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
+import api from '../config/api';
+import { gooeyToast } from 'goey-toast';
 
 function Preview() {
     const { resumeId } = useParams();
@@ -11,11 +12,15 @@ function Preview() {
     const [loading, setLoading] = useState(true);
 
     const loadResume = async () => {
-        setLoading(true);
-        // Simulating API fetch with dummy data
-        const foundResume = dummyResumeData.find(resume => resume._id === resumeId);
-        setResumeData(foundResume || null);
-        setLoading(false);
+        try {
+            setLoading(true);
+            const { data: resData } = await api.get(`/api/resumes/public/` + resumeId)
+            setResumeData(resData);
+        } catch (error) {
+            gooeyToast.error(error.response?.data?.message || "Something went wrong", { preset: "bouncy" })
+        } finally {
+            setLoading(false);
+        }
     }
 
     useEffect(() => {

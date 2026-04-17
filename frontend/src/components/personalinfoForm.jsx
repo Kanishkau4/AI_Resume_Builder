@@ -38,12 +38,23 @@ function PersonalInfoForm({ data, onChange, removeBackground, setRemoveBackgroun
                     <input type="file" accept="image/*" className='hidden' onChange={(e) => handleChange('image', e.target.files[0])} />
                 </label>
                 {typeof data.image === 'object' && (
-                    <div className='flex flex-col pl-4 gap-2 text-sm'>
-                        <p>Remove Background</p>
-                        <label className='relative inline-flex items-center cursor-pointer text-slate-500 gap-3'>
-                            <input type="checkbox" id="remove-bg" className='sr-only peer' checked={removeBackground} onChange={(e) => setRemoveBackground(prev => !prev)} />
-                            <div className='w-10 h-5 bg-slate-200 rounded-full peer peer-checked:bg-emerald-600 transition-colors'></div>
-                            <span className='dot absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition-transform duration-300 ease-in-out peer-checked:translate-x-5'></span>
+                    <div className='flex flex-col pl-4 gap-2'>
+                        <div className='flex items-center gap-1.5'>
+                            <p className='text-xs font-semibold text-slate-700 uppercase tracking-wider'>Remove Background</p>
+                            <div className='px-1.5 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-md uppercase'>AI</div>
+                        </div>
+                        <label className='relative inline-flex items-center cursor-pointer group'>
+                            <input
+                                type="checkbox"
+                                id="remove-bg"
+                                className='sr-only peer'
+                                checked={removeBackground}
+                                onChange={() => setRemoveBackground(!removeBackground)}
+                            />
+                            <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                            <span className='ml-3 text-sm font-medium text-slate-600 group-hover:text-slate-800 transition-colors'>
+                                {removeBackground ? 'Enabled' : 'Disabled'}
+                            </span>
                         </label>
                     </div>
                 )}

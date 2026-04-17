@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { data, Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, FileText, User, Briefcase, GraduationCap, Lightbulb, Folder, ChevronLeft, ChevronRight, Save, Eye, EyeClosed, Download } from 'lucide-react'
 import PersonalInfoForm from '../components/personalinfoForm'
 import { dummyResumeData } from '../assets/assets'
@@ -12,9 +12,14 @@ import EducationForm from '../components/educationForm'
 import ProjectsForm from '../components/projectsForm'
 import SkillsForm from '../components/skillsForm'
 import { FaShare } from 'react-icons/fa'
+import api from '../config/api'
+import { useSelector } from 'react-redux'
+import { gooeyToast } from 'goey-toast'
 
 function ResumeBuilder() {
     const { resumeId } = useParams()
+    const { token } = useSelector((state) => state.auth)
+    const navigate = useNavigate()
     const [resumeData, setResumeData] = useState({
         _id: "",
         title: "",
@@ -23,22 +28,50 @@ function ResumeBuilder() {
         experience: [],
         education: [],
         skills: [],
-        project: [],
+        projects: [],
         template: "classic",
         accent_color: "#3B82F6",
         public: false,
     })
 
     const loadExistingResume = async () => {
-        const resume = dummyResumeData.find(resume => resume._id === resumeId)
-        if (resume) {
-            setResumeData(resume)
-            document.title = resume.title
+        try {
+            const { data } = await api.get(`/api/resumes/get/` + resumeId, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            if (data && data._id) {
+                setResumeData(data)
+                document.title = data.title || "Resume Builder"
+            } else {
+                gooeyToast.error("Resume not found", { preset: "bouncy" })
+                navigate('/app')
+            }
+        } catch (error) {
+            gooeyToast.error(error.response?.data?.message || "Something went wrong", { preset: "bouncy" })
+            navigate('/app')
         }
     }
 
     const [activeSectionIndex, setActiveSectionIndex] = useState(0)
     const [removeBackground, setRemoveBackground] = useState(false)
+
+    const handleRemoveBackgroundChange = (value) => {
+        setRemoveBackground(value)
+        // If enabling background removal and we have a local file selected, trigger the save immediately
+        if (value && resumeData.personal_info.image instanceof File) {
+            gooeyToast.promise(saveData(value), {
+                loading: 'Removing background...',
+                success: 'Background removed!',
+                error: 'Failed to remove background',
+                description: {
+                    success: 'Your image has been processed.',
+                    error: 'Please try again later.',
+                }
+            })
+        }
+    }
 
     const sections = [
         { id: "personal_info", name: "Personal Information", icon: User },
@@ -55,8 +88,23 @@ function ResumeBuilder() {
         loadExistingResume()
     }, [])
 
-    const changeResumeVisibility = () => {
-        setResumeData({ ...resumeData, public: !resumeData.public })
+    const changeResumeVisibility = async () => {
+        try {
+            const formData = new FormData()
+            formData.append("resumeId", resumeId)
+            const updatedResumeData = { ...resumeData, public: !resumeData.public }
+            formData.append("resumeData", JSON.stringify(updatedResumeData))
+            const { data } = await api.put(`/api/resumes/update`, formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data"
+                }
+            })
+            setResumeData(updatedResumeData)
+            gooeyToast.success("Resume visibility changed successfully", { preset: "bouncy" })
+        } catch (error) {
+            gooeyToast.error(error.response?.data?.message || "Something went wrong", { preset: "bouncy" })
+        }
     }
 
     const handleShare = () => {
@@ -69,12 +117,39 @@ function ResumeBuilder() {
                 url: shareLink,
             })
         } else {
-            alert('Share is not supported on this browser. Please copy the link manually: ' + shareLink)
+            navigator.clipboard.writeText(shareLink)
+            gooeyToast.success("Link copied to clipboard", { preset: "bouncy" })
         }
     }
 
     const downloadResume = () => {
         window.print()
+    }
+
+    const saveData = async (removeBGOverride = null) => {
+        const isRemoveBG = removeBGOverride !== null ? removeBGOverride : removeBackground;
+        let uploadresumeData = structuredClone(resumeData)
+
+        // remove image from uploadresumeData
+        const isNewImage = uploadresumeData.personal_info && resumeData.personal_info.image instanceof File;
+        if (isNewImage) {
+            delete uploadresumeData.personal_info.image
+        }
+
+        const formData = new FormData()
+        formData.append("resumeId", resumeId)
+        formData.append("resumeData", JSON.stringify(uploadresumeData))
+        if(isRemoveBG) formData.append("removeBackground", "true")
+        if (isNewImage) formData.append("image", resumeData.personal_info.image)
+
+        const { data } = await api.put(`/api/resumes/update`, formData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data"
+            }
+        })
+        setResumeData(data)
+        return data
     }
     return (
         <div>
@@ -146,7 +221,7 @@ function ResumeBuilder() {
                                     <PersonalInfoForm data={resumeData.personal_info}
                                         onChange={(data) => setResumeData(prev => ({ ...prev, personal_info: data }))}
                                         removeBackground={removeBackground}
-                                        setRemoveBackground={setRemoveBackground}
+                                        setRemoveBackground={handleRemoveBackgroundChange}
                                     />
                                 )}
                                 {activeSection.id === 'professional_summary' && (
@@ -165,8 +240,8 @@ function ResumeBuilder() {
                                     />
                                 )}
                                 {activeSection.id === 'projects' && (
-                                    <ProjectsForm data={resumeData.project}
-                                        onChange={(data) => setResumeData(prev => ({ ...prev, project: data }))}
+                                    <ProjectsForm data={resumeData.projects}
+                                        onChange={(data) => setResumeData(prev => ({ ...prev, projects: data }))}
                                     />
                                 )}
                                 {activeSection.id === 'skills' && (
@@ -195,7 +270,21 @@ function ResumeBuilder() {
                             </div>
                             <div className='flex justify-between mt-6'>
                                 <button
-                                    onClick={() => saveResume()}
+                                    onClick={() => gooeyToast.promise(saveData(), {
+                                        loading: 'Saving...',
+                                        success: 'Changes saved',
+                                        error: 'Something went wrong',
+                                        description: {
+                                            success: 'All changes have been synced.',
+                                            error: 'Please try again later.',
+                                        },
+                                        action: {
+                                            error: {
+                                                label: 'Retry',
+                                                onClick: () => saveData(),
+                                            },
+                                        },
+                                    })}
                                     className={`flex items-center gap-1 p-2 rounded-lg text-sm font-medium transition-all bg-green-500 text-white hover:bg-green-600`}
                                 >
                                     <Save className='size-4' />

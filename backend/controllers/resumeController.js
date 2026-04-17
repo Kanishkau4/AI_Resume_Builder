@@ -30,10 +30,16 @@ export const createResume = async (req, res) => {
 export const updateResume = async (req, res) => {
     try {
         // get data from request body
-        const { resumeId, resumeData, removeBackground } = req.body;
+        const { resumeId, resumeData, removeBackground, title } = req.body;
         const image = req.file;
 
-        let resumeDataCopy = JSON.parse(resumeData);
+        let updateFields = {};
+        if (title) updateFields.title = title;
+
+        if (resumeData) {
+            let parsedData = typeof resumeData === 'string' ? JSON.parse(resumeData) : JSON.parse(JSON.stringify(resumeData));
+            updateFields = { ...updateFields, ...parsedData };
+        }
 
         // upload image to imagekit
         if (image) {
@@ -43,14 +49,15 @@ export const updateResume = async (req, res) => {
                 fileName: image.originalname || `resume-image-${Date.now()}.png`,
                 folder: "user-resumes",
                 transformation: {
-                    pre: "w-300,h-300,fo-face,z-0.75" + (removeBackground ? ",e-bgremove" : "")
+                    pre: "w-300,h-300,fo-face,z-0.75" + (removeBackground === 'true' || removeBackground === true ? ",e-bgremove" : "")
                 }
             });
 
-            resumeDataCopy.personal_info.image = response.url;
+            if (!updateFields.personal_info) updateFields.personal_info = {};
+            updateFields.personal_info.image = response.url;
         }
 
-        const resume = await Resume.findByIdAndUpdate({ userId: req.userId }, { _id: resumeId, ...resumeDataCopy }, { new: true });
+        const resume = await Resume.findOneAndUpdate({ _id: resumeId, userId: req.userId }, updateFields, { new: true });
 
         // send response
         return res.status(200).json(resume);
@@ -67,7 +74,7 @@ export const updateResume = async (req, res) => {
 export const deleteResume = async (req, res) => {
     try {
         // delete resume
-        const deletedResume = await Resume.findByIdAndDelete(req.params.resumeId, { userId: req.userId });
+        const deletedResume = await Resume.findOneAndDelete({ _id: req.params.resumeId, userId: req.userId });
 
         // send response
         return res.status(200).json(deletedResume);
@@ -83,7 +90,7 @@ export const deleteResume = async (req, res) => {
 export const getResume = async (req, res) => {
     try {
         // get resume from database
-        const resume = await Resume.findById(req.params.resumeId, { userId: req.userId });
+        const resume = await Resume.findOne({ _id: req.params.resumeId, userId: req.userId });
 
         // check if resume exists
         if (!resume) {

@@ -1,7 +1,13 @@
-import React from 'react'
-import { Plus, Trash2, Briefcase, Sparkles } from 'lucide-react'
+import React, { useState } from 'react'
+import { Plus, Trash2, Briefcase, Sparkles, Loader2 } from 'lucide-react'
+import { useSelector } from 'react-redux'
+import api from '../config/api'
+import { gooeyToast } from 'goey-toast'
 
 function ExperienceForm({ data, onChange }) {
+
+    const [isGenerating, setIsGenerating] = useState(-1)
+    const token = useSelector((state) => state.auth.token)
 
     const addExperience = () => {
         const newExperience = {
@@ -26,6 +32,24 @@ function ExperienceForm({ data, onChange }) {
         onChange(updatedExperience)
     }
 
+    const handleGenerateDescription = async (index) => {
+        try {
+            setIsGenerating(index)
+            const prompt = `Enhance this job description "${data[index].description}" for the role of "${data[index].position}" at "${data[index].company}".`
+            const response = await api.post('/api/ai/enhance-job-description', {
+                userContent: prompt
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            updateExperience(index, 'description', response.data.resume)
+        } catch (error) {
+            gooeyToast.error(error.response?.data?.message || "Something went wrong", { preset: "bouncy" })
+        } finally {
+            setIsGenerating(-1)
+        }
+    }
 
     return (
         <div className='space-y-4'>
@@ -69,9 +93,18 @@ function ExperienceForm({ data, onChange }) {
                             </label>
                             <div className='space-y-2'>
                                 <div className='flex items-center justify-end'>
-                                    <button className='flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-emerald-100 to-emerald-200 text-sm text-emerald-500 hover:text-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-lg'>
-                                        <Sparkles className='size-4 mr-2' />
-                                        AI Generate Description
+                                    <button onClick={() => handleGenerateDescription(index)} disabled={isGenerating === index || !data[index].company || !data[index].position} className='flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-emerald-100 to-emerald-200 text-sm text-emerald-500 hover:text-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-lg'>
+                                        {isGenerating === index ? (
+                                            <>
+                                                <Loader2 className='size-4 mr-2 animate-spin' />
+                                                Generating...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Sparkles className='size-4 mr-2' />
+                                                Enhance with AI
+                                            </>
+                                        )}
                                     </button>
                                 </div>
                                 <textarea className='w-full px-3 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors text-sm' value={experience.description || ''} onChange={(e) => updateExperience(index, 'description', e.target.value)} placeholder='Add a description of your responsibilities and achievements...' rows={5} />

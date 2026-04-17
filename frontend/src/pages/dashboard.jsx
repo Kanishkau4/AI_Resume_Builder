@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { FilePenLineIcon, Pencil, Plus, Trash2Icon, Upload, UploadCloud, X, Search, MoreVertical, LayoutGrid, List } from 'lucide-react'
+import pdfToText from 'react-pdftotext'
 import { dummyResumeData } from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import api from '../config/api'
+import { gooeyToast } from 'goey-toast'
 
 function Dashboard() {
     const colors = ["#6366f1", "#8b5cf6", "#ec4899", "#f43f5e", "#f59e0b", "#10b981", "#06b6d4"]
@@ -14,38 +17,154 @@ function Dashboard() {
     const [resumeId, setResumeId] = useState(null)
     const [editResumeId, setEditResumeId] = useState(null)
     const [searchQuery, setSearchQuery] = useState("")
+    const [loading, setLoading] = useState(false)
 
     const navigate = useNavigate()
 
-    const { user } = useSelector((state) => state.auth)
+    const { user, token } = useSelector((state) => state.auth)
 
     const loadResumes = async () => {
-        setResumes(dummyResumeData)
+        try {
+            setLoading(true)
+            const { data } = await api.get('/api/users/resumes', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            setResumes(data)
+        } catch (error) {
+            gooeyToast.error(error.response?.data?.message || "Something went wrong", { preset: "bouncy" })
+        } finally {
+            setLoading(false)
+        }
     }
 
     const handleCreateResume = async (e) => {
-        e.preventDefault()
-        setShowCreateResume(false)
-        navigate('/app/builder/res123')
+        try {
+            e.preventDefault()
+            const { data } = await api.post('/api/resumes/create', {
+                title: resumeTitle
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            setResumes([...resumes, data])
+            setShowCreateResume(false)
+            setResumeTitle("")
+            navigate(`/app/builder/${data._id}`)
+        } catch (error) {
+            gooeyToast.error(error.response?.data?.message || "Something went wrong", { preset: "bouncy" })
+        }
     }
 
     const handleUploadResume = async (e) => {
         e.preventDefault()
-        setShowUploadResume(false)
-        navigate('/app/builder/res123')
+        try {
+            setLoading(true)
+            const resumeText = await pdfToText(resumeId)
+            const { data } = await api.post('/api/ai/upload-resume', {
+                title: resumeTitle,
+                resumeText: resumeText
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            await loadResumes()
+            setShowUploadResume(false)
+            setResumeTitle("")
+            setResumeId(null)
+            navigate(`/app/builder/${data.resumeId}`)
+        } catch (error) {
+            gooeyToast.error(error.response?.data?.message || "Something went wrong", { preset: "bouncy" })
+        } finally {
+            setLoading(false)
+        }
     }
 
+    // Edit resume title
     const handleEditResume = async (e) => {
-        e.preventDefault()
-        setEditResumeId(null)
+        try {
+            e.preventDefault()
+            setLoading(true)
+            await api.put(`/api/resumes/update`, {
+                resumeId: editResumeId,
+                title: resumeTitle
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            setResumes(resumes.map(resume => resume._id === editResumeId ? { ...resume, title: resumeTitle } : resume))
+            setResumeTitle("")
+            setEditResumeId(null)
+            gooeyToast.success("Resume title updated successfully", { preset: "bouncy" })
+        } catch (error) {
+            gooeyToast.error(error.response?.data?.message || "Something went wrong", { preset: "bouncy" })
+        } finally {
+            setLoading(false)
+        }
     }
 
+    // Delete function
+    const performDelete = async (resumeId, toastId) => {
+        gooeyToast.dismiss(toastId);
+
+        try {
+            setLoading(true)
+            await api.delete(`/api/resumes/delete/${resumeId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            setResumes(resumes.filter(resume => resume._id !== resumeId))
+            gooeyToast.success("Resume deleted successfully", { preset: "bouncy" })
+        } catch (error) {
+            gooeyToast.error(error.response?.data?.message || "Something went wrong", { preset: "bouncy" })
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    // Delete function with gooey toast
     const handleDeleteResume = (e, resumeId) => {
         e.stopPropagation()
-        const confirmDelete = window.confirm("Are you sure you want to delete this resume?")
-        if (confirmDelete) {
-            setResumes(resumes.filter(resume => resume._id !== resumeId))
-        }
+
+        const toastId = gooeyToast.warning("Delete Resume?", {
+            preset: "bouncy",
+            duration: 10000,
+            description: (
+                <div className="flex flex-col gap-3 mt-2">
+                    <p className="text-sm text-gray-600">
+                        Are you sure you want to delete this resume?
+                    </p>
+                    <div className="flex gap-2">
+                        {/* Cancel Button */}
+                        <button
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                gooeyToast.dismiss(toastId);
+                            }}
+                            className="px-4 py-1.5 text-xs font-semibold text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                        >
+                            Cancel
+                        </button>
+
+                        {/* Confirm (Delete) Button */}
+                        <button
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                performDelete(resumeId, toastId);
+                            }}
+                            className="px-4 py-1.5 text-xs font-semibold text-white bg-red-500 rounded-md hover:bg-red-600"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            )
+        });
     }
 
     useEffect(() => {
