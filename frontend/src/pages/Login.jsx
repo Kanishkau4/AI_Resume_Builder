@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import api from '../config/api'
 import { login as loginAction } from '../app/features/authSlice'
 import { gooeyToast } from 'goey-toast'
+import loginImage from '../assets/resume_mockup_2.png'
 
 function Login() {
     const dispatch = useDispatch()
@@ -55,7 +56,7 @@ function Login() {
             `}</style>
 
             <div className="w-screen md:w-1/2 hidden md:inline-block">
-                <img className="h-full w-full object-cover" src="../src/assets/resume_mockup_2.png" alt="leftSideImage" />
+                <img className="h-full w-full object-cover" src={loginImage} alt="leftSideImage" />
             </div>
 
             <div className="w-screen md:w-1/2 flex flex-col items-center justify-center p-6 bg-white">
