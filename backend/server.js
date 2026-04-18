@@ -26,4 +26,4 @@ app.use("/api/resumes", resumeRoute);
 // ai routes
 app.use("/api/ai", aiRoute);
 
-module.exports = app;
+export default app;
