@@ -26,8 +26,4 @@ app.use("/api/resumes", resumeRoute);
 // ai routes
 app.use("/api/ai", aiRoute);
 
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+module.exports = app;
