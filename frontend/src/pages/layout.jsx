@@ -2,7 +2,7 @@ import React from 'react'
 import { Outlet, Navigate } from 'react-router-dom'
 import Navbar from '../components/navbar'
 import { useSelector } from 'react-redux'
-import Loader from '../components/templates/Loader'
+import Loader from '../components/Loader'
 
 function Layout() {
 

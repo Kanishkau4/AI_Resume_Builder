@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ResumePreview from '../components/resumePreview';
 import { useParams, Link } from 'react-router-dom';
-import Loader from '../components/templates/Loader';
+import Loader from '../components/Loader';
 import { ArrowLeft } from 'lucide-react';
 import api from '../config/api';
 import { gooeyToast } from 'goey-toast';
