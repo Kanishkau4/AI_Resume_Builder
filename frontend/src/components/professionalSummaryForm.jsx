@@ -37,12 +37,12 @@ function ProfessionalSummaryForm({ data, onChange }) {
                 <button onClick={handleGenerateSummary} disabled={isGenerating} className='flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-green-100 to-green-200 text-sm text-slate-500 hover:text-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-xl'>
                     {isGenerating ? (
                         <>
-                            <Loader2 className='size-4 mr-2 animate-spin' />
+                            <Sparkles className='size-4 mr-2 text-green-500 animate-pulse' />
                             Generating...
                         </>
                     ) : (
                         <>
-                            <Sparkles className='size-4 mr-2' />
+                            <Sparkles className='size-4 mr-2 text-green-500' />
                             Enhance with AI
                         </>
                     )}

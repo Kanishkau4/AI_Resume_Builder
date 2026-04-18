@@ -96,12 +96,12 @@ function ExperienceForm({ data, onChange }) {
                                     <button onClick={() => handleGenerateDescription(index)} disabled={isGenerating === index || !data[index].company || !data[index].position} className='flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-emerald-100 to-emerald-200 text-sm text-emerald-500 hover:text-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-lg'>
                                         {isGenerating === index ? (
                                             <>
-                                                <Loader2 className='size-4 mr-2 animate-spin' />
+                                                <Sparkles className='size-4 mr-2 text-emerald-500 animate-pulse' />
                                                 Generating...
                                             </>
                                         ) : (
                                             <>
-                                                <Sparkles className='size-4 mr-2' />
+                                                <Sparkles className='size-4 mr-2 text-emerald-500' />
                                                 Enhance with AI
                                             </>
                                         )}
