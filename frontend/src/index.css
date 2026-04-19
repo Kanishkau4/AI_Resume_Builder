@@ -27,4 +27,10 @@
         print-color-adjust: exact !important;
         color-adjust: exact !important;
     }
+    html, body {
+        background: white !important;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
 }

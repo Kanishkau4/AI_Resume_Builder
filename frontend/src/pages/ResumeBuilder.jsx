@@ -123,7 +123,10 @@ function ResumeBuilder() {
     }
 
     const downloadResume = () => {
+        const originalTitle = document.title
+        document.title = resumeData.title || "Resume"
         window.print()
+        document.title = originalTitle
     }
 
     const saveData = async (removeBGOverride = null) => {

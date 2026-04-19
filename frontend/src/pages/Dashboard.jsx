@@ -18,6 +18,7 @@ function Dashboard() {
     const [editResumeId, setEditResumeId] = useState(null)
     const [searchQuery, setSearchQuery] = useState("")
     const [loading, setLoading] = useState(false)
+    const [dragActive, setDragActive] = useState(false)
 
     const navigate = useNavigate()
 
@@ -116,6 +117,30 @@ function Dashboard() {
                 navigate(`/app/builder/${data.resumeId}`)
             }
         })
+    }
+
+    const handleDrag = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        if (e.type === "dragenter" || e.type === "dragover") {
+            setDragActive(true)
+        } else if (e.type === "dragleave") {
+            setDragActive(false)
+        }
+    }
+
+    const handleDrop = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        setDragActive(false)
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            const file = e.dataTransfer.files[0]
+            if (file.type === "application/pdf") {
+                setUploadFile(file)
+            } else {
+                gooeyToast.error("Please upload a PDF file", { preset: "bouncy" })
+            }
+        }
     }
 
     // Edit resume title
@@ -407,9 +432,13 @@ function Dashboard() {
                                                 hidden
                                                 onChange={(e) => setUploadFile(e.target.files[0])}
                                             />
-                                            <label
+                                             <label
                                                 htmlFor="resume-input"
-                                                className='flex flex-col items-center justify-center gap-4 border-2 border-dashed border-slate-200 rounded-2xl p-8 hover:border-emerald-500 hover:bg-emerald-50/50 cursor-pointer transition-all group'
+                                                onDragEnter={handleDrag}
+                                                onDragLeave={handleDrag}
+                                                onDragOver={handleDrag}
+                                                onDrop={handleDrop}
+                                                className={`flex flex-col items-center justify-center gap-4 border-2 border-dashed rounded-2xl p-8 transition-all group ${dragActive ? 'border-emerald-500 bg-emerald-50/50 scale-[1.02]' : 'border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 cursor-pointer'}`}
                                             >
                                                 {uploadFile ? (
                                                     <div className='text-center'>
@@ -417,15 +446,15 @@ function Dashboard() {
                                                             <UploadCloud className="size-6" />
                                                         </div>
                                                         <p className='text-sm font-bold text-slate-800'>{uploadFile.name}</p>
-                                                        <p className='text-xs text-slate-500 mt-1'>Click to change file</p>
+                                                        <p className='text-xs text-slate-500 mt-1'>Click or drag to change file</p>
                                                     </div>
                                                 ) : (
                                                     <>
-                                                        <div className='p-4 bg-slate-100 text-slate-400 rounded-2xl group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors'>
+                                                        <div className={`p-4 rounded-2xl transition-colors ${dragActive ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400 group-hover:bg-emerald-100 group-hover:text-emerald-600'}`}>
                                                             <UploadCloud className="size-8" />
                                                         </div>
                                                         <div className='text-center'>
-                                                            <p className='font-bold text-slate-800 text-sm'>Choose PDF</p>
+                                                            <p className='font-bold text-slate-800 text-sm'>{dragActive ? 'Drop it here!' : 'Choose or Drag PDF'}</p>
                                                             <p className='text-xs text-slate-400 mt-1'>Max size: 5MB</p>
                                                         </div>
                                                     </>

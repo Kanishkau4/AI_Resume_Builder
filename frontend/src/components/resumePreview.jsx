@@ -32,23 +32,41 @@ function ResumePreview({ data, template, accentColor, classes = "" }) {
     }
 
     return (
-        <div className='w-full bg-slate-100'>
-            <div id='resume-preview' className={`print:shadow-none print:border-none shadow-sm border border-slate-200` + classes}>
+        <div className='w-full bg-slate-100 print:bg-white'>
+            <div id='resume-preview' className={`print:shadow-none print:border-none shadow-sm border border-slate-200 bg-white print:w-[210mm] print:mx-auto ` + classes}>
                 {renderTemplate()}
             </div>
             <style>
                 {`
                 @page {
                     size: A4;
-                    margin: 0;
+                    margin: 0mm;
                 }
                 @media print {
-                    html, body {
-                        width: 210mm;
-                        height: 297mm;
-                        margin: 0;
-                        padding: 0;
-                        background: white;
+                    body {
+                        background: white !important;
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+                    * {
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+                    /* Ensure text is selectable and sharp */
+                    #resume-preview {
+                        box-shadow: none !important;
+                        border: none !important;
+                        width: 210mm !important;
+                        min-height: 297mm !important;
+                        position: relative !important;
+                        left: 0 !important;
+                        top: 0 !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                    }
+                    /* Hide unnecessary elements if any overlap */
+                    .print-hidden {
+                        display: none !important;
                     }
                 }
                 `}
